@@ -165,6 +165,26 @@ function buildTaskItem(task) {
   const editBtn = el("button", { className: "btn-ghost", text: "Редактировать", attrs: { type: "button" } });
   const delBtn = el("button", { className: "btn-ghost btn-danger", text: "Удалить", attrs: { type: "button" } });
 
+  editBtn.setAttribute("data-action", "edit");
+  delBtn.setAttribute("data-action", "delete");
+  checkbox.setAttribute("data-action", "toggle");
+  
+  ui.ul.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const action = btn.getAttribute("data-action");
+  if (!action) return;
+
+  const li = btn.closest("li.task");
+  if (!li) return;
+
+  const id = li.getAttribute("data-id");
+  if (action === "delete") {
+    state.tasks = state.tasks.filter(t => t.id !== id);
+    render();
+  }});
+
   actions.append(editBtn, delBtn);
 
   li.append(top, actions);
