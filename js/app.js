@@ -183,7 +183,25 @@ function buildTaskItem(task) {
   if (action === "delete") {
     state.tasks = state.tasks.filter(t => t.id !== id);
     render();
-  }});
+  }
+  if (action === "edit") {
+  const task = state.tasks.find(t => t.id === id);
+  if (!task) return;
+
+  const newTitle = prompt("Новый текст задачи:", task.title);
+  if (newTitle === null) return; // отмена
+  const titleTrim = newTitle.trim();
+  if (!titleTrim) return;
+
+  const newDate = prompt("Новая дата (YYYY-MM-DD) или пусто:", task.dueDate || "");
+  if (newDate === null) return;
+
+  task.title = titleTrim;
+  task.dueDate = newDate.trim() ? newDate.trim() : null;
+
+  render();
+}
+});
   
   ui.ul.addEventListener("change", (e) => {
   const input = e.target;
@@ -201,11 +219,12 @@ function buildTaskItem(task) {
   render();
   });
 
+
   actions.append(editBtn, delBtn);
 
   li.append(top, actions);
   return li;
-
+  
 }
 
 // Первичный рендер
