@@ -173,3 +173,28 @@ function buildTaskItem(task) {
 
 // Первичный рендер
 render();
+
+function uid() {
+  return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "_" + Math.random().toString(16).slice(2);
+}
+
+ui.form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const title = ui.form.elements.title.value.trim();
+  const dueDate = ui.form.elements.dueDate.value || null;
+
+  if (!title) return;
+
+  const maxOrder = state.tasks.reduce((mx, t) => Math.max(mx, t.order), 0);
+  state.tasks.push({
+    id: uid(),
+    title,
+    dueDate,
+    done: false,
+    order: maxOrder + 1,
+  });
+
+  ui.form.reset();
+  render();
+});
