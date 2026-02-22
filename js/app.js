@@ -168,7 +168,7 @@ function buildTaskItem(task) {
   editBtn.setAttribute("data-action", "edit");
   delBtn.setAttribute("data-action", "delete");
   checkbox.setAttribute("data-action", "toggle");
-  
+
   ui.ul.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
@@ -184,11 +184,28 @@ function buildTaskItem(task) {
     state.tasks = state.tasks.filter(t => t.id !== id);
     render();
   }});
+  
+  ui.ul.addEventListener("change", (e) => {
+  const input = e.target;
+  if (!(input instanceof HTMLInputElement)) return;
+  if (input.getAttribute("data-action") !== "toggle") return;
+
+  const li = input.closest("li.task");
+  const id = li?.getAttribute("data-id");
+  if (!id) return;
+
+  const task = state.tasks.find(t => t.id === id);
+  if (!task) return;
+
+  task.done = input.checked;
+  render();
+  });
 
   actions.append(editBtn, delBtn);
 
   li.append(top, actions);
   return li;
+
 }
 
 // Первичный рендер
